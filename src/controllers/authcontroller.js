@@ -2,40 +2,34 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 
-exports.register = (req,res) => {
-    const {name,email, password } = req.body;
-    const userExist = User.findOne({email});
-    if(userExist){
-        return res.send(400)
-    }
-    const hash = bcrypt.genSalt(10);
-    const hashPassword = bcrypt.hash(password, hash);
-    const newUser = new User ({
-        name,
-        email,
-        password: hashPassword
-    });
-   newUser.save();
-   res.status(201).json({message: 'register ok'})
-};
-
-exports.login = (req,res) => {
-    const {email,password} = req.body;
-    const user = User.findOne({email});
-    if(!user) {
-        return res.status(400)
-    }
-    const match = bcrypt.compare(password, user.password);
-    if(!match) {
-        return res.send('password is not match')
-    }
-    const token = jwt.sign({id: user._id }, process.env.JWT_SECRET,{expireIn:'1h'});
-    res.json({token});
-}
-
-exports.profile = (req, res) => {
-  res.json({
-    message: 'User info',
-    user: req.user
+exports.register = (req, res) => {
+  const { name, email, password } = req.body;
+  const user = User.findOne({ email }); 
+  if (user) {
+    return res.status(400).json({ error: 'email exists' });
+  }
+  const salt = bcrypt.genSaltSync(10); 
+  const hashed = bcrypt.hashSync(password, salt);
+  const newUser = new User({
+    name: name,
+    email: email,
+    password: hashed
   });
+  newUser.save(); 
+  res.status(201).json({ message: 'register done' });
 };
+
+exports.login = (req, res) => {
+  const { email, password } = req.body;
+  const user = User.findOne({ email }); 
+  if (!user) {
+    return res.status(400).json({ error: 'no user' });
+  }
+  const match = bcrypt.compareSync(password, user.password); 
+  if (!match) {
+    return res.status(400).json({ error: 'wrong password' });
+  }
+  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expire: '1h' }); 
+  res.json({ token: token });
+};
+>>>>>>> feature/pollings

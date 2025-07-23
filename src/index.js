@@ -4,7 +4,7 @@ const app = express();
 app.use(express.json());
 
 app.get('/', (req, res) => {
-  res.send('Api run');
+  res.send('Api ok');
 });
 
 module.exports = app;
