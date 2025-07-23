@@ -4,26 +4,32 @@ const app = require('./index');
 const updateController = require('./controller/updateController');
 
 const server = http.createServer(app);
-const wss = new WebSocket.Server({ server });
+const websocketServer = new WebSocket.Server({ server });
 
-updateController.setWssInstance(wss);
+updateController.setWssInstance(websocketServer);
 
-wss.on('connection', ws => {
-  console.log('WebSocket connected');
-  ws.send(JSON.stringify({ message: 'Welcome!' }));
+websocketServer.on('connection', socket => {
+  console.log('websocket ok');
+  websocketServer.send('server on');
+  socket.on('message' , message => {
+    websocketServer.clients.forEach(client => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(message)
+    }
+  });
+  })
 });
 
 app.get('/long-polling', (req, res) => {
-  updateController.addWaitingClient(res);
-  
+  updateController.addClient(res);
   req.setTimeout(30000, () => {
-    res.json({ message: 'Timeout - no new data', timestamp: new Date() });
+    res.json({ message: 'no data', time: new Date() });
   });
 });
 
-app.post('/update', updateController.updateData);
+app.post('/update', updateController.sendUpdate);
 
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+const port = process.env.PORT || 3000;
+server.listen(port, () => {
+  console.log(port);
 });
