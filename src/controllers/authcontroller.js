@@ -32,3 +32,10 @@ exports.login = (req,res) => {
     const token = jwt.sign({id: user._id }, process.env.JWT_SECRET,{expireIn:'1h'});
     res.json({token});
 }
+
+exports.profile = (req, res) => {
+  res.json({
+    message: 'User info',
+    user: req.user
+  });
+};
