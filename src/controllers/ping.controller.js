@@ -1,3 +1,3 @@
 exports.ping = (req,res) => {
-    res.status(200).json({message: 'okr'});
+    res.status(200).json({message: 'oky'});
 };
