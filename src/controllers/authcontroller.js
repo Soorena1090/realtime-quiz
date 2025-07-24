@@ -17,7 +17,8 @@ exports.register = async (req, res) => {
       email: email,
       password: hashed,
     });
-
+    
+    newUser.save();
     res.status(201).json({ message: "register done" });
   } catch (err) {
     console.error(err);
