@@ -9,7 +9,7 @@ app.use(require('./routes/ping.routes'));
 
 
 app.get('/', (req, res) => {
-  res.send('Api ok');
+  res.send('Api run');
 });
 
 module.exports = app;
