@@ -5,9 +5,10 @@ const updateController = require('./controllers/updateController');
 const connectDB = require('./database/dbConnect')
 
 const server = http.createServer(app);
-const wss = new WebSocket.Server({ server });
+const websocketServer = new WebSocket.Server({ server });
 
-updateController.setWssInstance(wss);
+updateController.setWebsocket(websocketServer);
+
 
 connectDB();
 

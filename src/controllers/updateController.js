@@ -1,36 +1,42 @@
 
-let waitingClients = [];
-let wss; 
-const setWssInstance = (wssInstance) => {
-  wss = wssInstance;
+let clients = []; 
+let websocket; 
+const setWebsocket = (ws) => {
+  websocket = ws;
 };
 
-const latestData = null;
+let data = null; 
 
-const updateData = (req, res) => {
-  const { message } = req.body;
-  if (!message) return res.status(400).json({ error: 'Message required' });
+const sendUpdate = (req, res) => {
+  const message = req.body.message;
+  if (!message) {
+    return res.status(400).json({ error: 'need message' });
+  }
 
-  const data = { message, timestamp: new Date() };
+  const newData = { message: message, time: new Date() }; 
+  data = newData; 
+  
+  for (let i = 0; i < clients.length; i++) {
+    clients[i].json(newData);
+  }
+  clients = [];
 
-  waitingClients.forEach(clientRes => clientRes.json(data));
-  waitingClients = [];
-
-  wss.clients.forEach(client => {
+  
+  websocket.clients.forEach(client => {
     if (client.readyState === WebSocket.OPEN) {
-      client.send(JSON.stringify(data));
+      client.send(newData.message);
     }
   });
 
-  res.json({ status: 'Data updated and sent' });
+  res.json({ status: 'data sent ok' });
 };
 
-const addWaitingClient = (res) => {
-  waitingClients.push(res);
+const addClient = (res) => {
+  clients.push(res);
 };
 
 module.exports = {
-  updateData,
-  addWaitingClient,
-  setWssInstance,
+  sendUpdate,
+  addClient,
+  setWebsocket
 };
