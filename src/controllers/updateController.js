@@ -1,44 +1,28 @@
 let clients = [];
-const websocketServer = null;
 
-const setWebsocket = (wss) => {
-  websocketServer = wss;
+const longPool = (req, res) => {
+  clients.push(res);
 
-  websocketServer.on("connecting", (ws) => {
-    console.log("WebSocket connect");
-    ws.on("message", (message) => {
-      console.log("Received:", message);
-      ws.send(message);
-    });
+  req.setTimeout(20000, () => {
+    if (!req.writableEnded) {
+      res, json({ meesage: "mo new data" });
+      clients = clients.filter((c) => c !== res);
+    }
   });
 };
 
-const addClient = (res) => {
-  clients.push(res);
-};
-
-const sendUpdate = (req, res) => {
+const update = (req, res) => {
   const { message } = req.body;
-  if (!message) {
-    return res.status(400).json({ error: "No message provided" });
-  }
 
-  clients.forEach((client) => client.json({ message }));
+  clients.forEach((clientRes) => {
+    clientRes.json({ message });
+  });
+
   clients = [];
-
-  if (websocketServer) {
-    websocketServer.clients.forEach((client) => {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(message);
-      }
-    });
-  }
-
-  res.json({ status: "Message sent to all clients" });
+  res.json({ status: "sent to all" });
 };
 
 module.exports = {
-  setWebsocket,
-  addClient,
-  sendUpdate,
+  longPool,
+  update,
 };
