@@ -2,6 +2,7 @@ const http = require('http');
 const app = require('./index');
 const updateController = require('./controllers/updateController');
 const connectDB = require('./database/dbConnect')
+const pool = require('./database/mysqlConnect');
 
 
 const server = http.createServer(app);
