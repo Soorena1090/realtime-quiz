@@ -14,7 +14,7 @@ wss.on('connection', (ws) => {
   ws.send(JSON.stringify({ message: 'Welcome to WebSocket server' }));
 
   ws.on('message', (message) => {
-    console.log('📩 Received from client:', message.toString());
+    console.log('Received from client:', message.toString());
     
     wss.clients.forEach(client => {
       if (client !== ws && client.readyState === WebSocket.OPEN) {
