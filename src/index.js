@@ -6,6 +6,7 @@ app.use(require('./routes/updateRout'));
 app.use(require('./routes/authrout'));
 app.use(require('./routes/ping.routes'));
 app.use(require('./routes/usersRout'))
+app.use(require('./routes/quizRout'))
 
 
 
