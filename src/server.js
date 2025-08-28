@@ -1,6 +1,12 @@
-const app = require('./index.js');
-const port = 3000;
+// const app = require('./index');
+// const updateController = require('./controllers/updateController');
+// const connectDB = require('./database/dbConnect')
+// const pool = require('./database/mysqlConnect');
 
-app.listen(port, () => {
-    console.log('server ok :200')
-})
+
+// connectDB();
+
+// const PORT = process.env.PORT || 3000;
+// server.listen(PORT, () => {
+//   console.log(`Server running on port ${PORT}`);
+// });
