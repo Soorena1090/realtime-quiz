@@ -1,0 +1,47 @@
+version: "3.9"
+services:
+  app:
+    build: .
+    container_name: realtime-quiz-app
+    restart: always
+    ports:
+      - "5000:5000"
+      - "8080:8080"
+    env_file:
+      - .env
+    depends_on:
+      - mongo
+      - mysql
+      - redis
+
+  mongo:
+    image: mongo:6
+    container_name: realtime-quiz-mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  mysql:
+    image: mysql:8
+    container_name: realtime-quiz-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: quizdb
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  redis:
+    image: redis:7
+    container_name: realtime-quiz-redis
+    restart: always
+    ports:
+      - "6379:6379"
+
+volumes:
+  mongo_data:
+  mysql_data:
